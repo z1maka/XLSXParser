@@ -17,7 +17,6 @@ class App extends React.Component {
     };
 
     handleChange = (event) => {
-        console.log(event.target.name);
         this.setState({
             [event.target.name]: event.target.files[0]
         })
@@ -82,7 +81,6 @@ class App extends React.Component {
     };
 
     render() {
-        console.log(this.state)
         const InputField = ({state, label, id, name}) => {
             return (
                 <div className='upload-section'>

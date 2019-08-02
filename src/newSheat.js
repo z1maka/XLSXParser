@@ -124,7 +124,7 @@ export default class NewSheet extends React.Component {
         return (
             <div className='container'>
                 <h2 className='container-header'>Real Sheet</h2>
-                <h4>{`Количество инвойсов ${this.props.invoice.ips.length}`}</h4>
+                <h4>{`Количество найденных серверов в Табличке ${this.state.data.length}`}</h4>
                 {<div className='ipsMenu'>
                     <div className='repeting-ips'>
                         <h2 className='show-repeating'>Repeating IP in Invoice</h2>
