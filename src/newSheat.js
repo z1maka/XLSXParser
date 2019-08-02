@@ -1,54 +1,83 @@
 import React from 'react'
 import server from './img/server.png'
 
+
+const _DATA = [];
+const notFoundIP = [];
 export default class NewSheet extends React.Component {
     state = {
         filterValue: '',
-        invoices: this.props.invoice.ips,
-        show: false
+        data: [],
+        notFoundIP: [],
+        sort: false,
+        repeatIp: [],
+    };
+
+    async componentDidMount() {
+        const invoices =  this.props.invoice.ips
+        invoices.map(ip=>{
+            if (this.props.sheet[ip]){
+                const item = {
+                    server: ip,
+                    name: this.props.sheet[ip].name  ? this.props.sheet[ip].name : null,
+                    coast: this.props.sheet[ip].coast  ? this.props.sheet[ip].coast : null,
+                }
+                _DATA.push(item)
+            }
+            if (!this.props.sheet[ip]){
+                notFoundIP.push(ip)
+            }
+        })
+        this.setState({data: _DATA, notFoundIP, repeatIp : this.props.invoice.repeatingIps})
     }
 
+
     showContent = () => {
-        return this.state.invoices.map((invoice, index) => {
+        return this.state.data.map((invoice, index) => {
+            return (
+                <div key={invoice.server} className='sheet-item'>
+                    <div className='sheet-server'>
+                        <p className='index'>{`${index+1}`}</p>
+                        <p className='sheet-server-value'>{invoice.server}</p>
+                    </div>
+                    <div className='sheet-server-name'>
+                        <p className='sheet-server-value'>{invoice.name}</p>
+                    </div>
+                    <div className='sheet-server-name'>
+                        <p className='sheet-server-value'>{
+                            invoice.coast ? invoice.coast : 'Not found'
+                        }</p>
+                    </div>
+
+                </div>
+            )
+        })
+    };
+
+    handleChange = (e) => {
+        const _data = _DATA.filter(ip => {
+            return ip.server.includes(e.target.value)
+        });
+        this.setState({
+            data: _data
+        })
+    };
+
+    showRepitedInvoice = () => {
+        return this.state.repeatIp.map(invoice => {
             return (
                 <div key={invoice} className='sheet-item'>
                     <div className='sheet-server'>
-                        <p className='index'>{`${index+1}`}</p>
+                        <img className='sheet-server-img' src={server} alt="icon"/>
                         <p className='sheet-server-value'>{invoice}</p>
                     </div>
-                    {
-                        this.props.sheet[invoice] ? (
-                            <>
-                                <div className='sheet-server-name'>
-                                    <p className='sheet-server-value'>{
-                                        this.props.sheet[invoice].name ? this.props.sheet[invoice].name : 'Not found'
-                                    }</p>
-                                </div>
-                                <div className='sheet-server-name'>
-                                    <p className='sheet-server-value'>{
-                                        this.props.sheet[invoice].coast ? this.props.sheet[invoice].coast : 'Not found'
-                                    }</p>
-                                </div>
-                            </>
-                        ) : <div className='sheet-server-name'><p className='error'></p>Invoice not found in sheet File</div>
-                    }
-
                 </div>
             )
         })
     }
 
-    handleChange = (e) => {
-        const data = this.props.invoice.ips.filter(ip => {
-            return ip.includes(e.target.value)
-        });
-        this.setState({
-            invoices: data
-        })
-    };
-
-    showRepitedInvoice = () => {
-        return this.props.invoice.repeatingIps.map(invoice => {
+    showNotFound = () => {
+        return this.state.repeatIp.map(invoice => {
             return (
                 <div key={invoice} className='sheet-item'>
                     <div className='sheet-server'>
@@ -61,16 +90,51 @@ export default class NewSheet extends React.Component {
     }
 
     handleSortClick = () =>{
-        console.log('sort')
-    }
+        if (!this.state.sort){
+            const _data = _DATA.sort((a, b)=>{
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.name < b.name) {
+                    return -1;
+                }
+                return 0
+            });
+            this.setState({data: _data, sort: true});
+        }else{
+            const data = [];
+            this.props.invoice.ips.map(ip=>{
+                if (this.props.sheet[ip]){
+                    const item = {
+                        server: ip,
+                        name: this.props.sheet[ip].name  ? this.props.sheet[ip].name : null,
+                        coast: this.props.sheet[ip].coast  ? this.props.sheet[ip].coast : null,
+                    }
+                    data.push(item)
+                }
+                this.setState({data, sort: false})
+            })
+        }
+    };
 
 
 
     render() {
+        console.log(this.state);
         return (
             <div className='container'>
                 <h2 className='container-header'>Real Sheet</h2>
                 <h4>{`Количество инвойсов ${this.props.invoice.ips.length}`}</h4>
+                {<div className='ipsMenu'>
+                    <div className='repeting-ips'>
+                        <h2 className='show-repeating'>Repeating IP in Invoice</h2>
+                        {this.showRepitedInvoice()}
+                    </div>
+                    <div className='not-found-ips'>
+                        <h2 className='show-repeating'>Not Found IP from Invoice</h2>
+                        {this.showNotFound()}
+                    </div>
+                </div>}
                 <div className='filter-section'>
                     <label className='filter-label' htmlFor='filter'>Filter by IP</label>
                     <input
@@ -82,10 +146,6 @@ export default class NewSheet extends React.Component {
                     />
                     <button onClick={this.handleSortClick} className='sort'>Sort by Name</button>
                 </div>
-                {this.props.invoice.repeatingIps.length && <h2 className='show-repeating' onClick={()=>this.setState({show: !this.state.show})}>Repeating Invoices</h2>}
-                {this.state.show && <div className='repeting-ips'>
-                    {this.showRepitedInvoice()}
-                </div>}
                 <div className='sheet-container'>
                     <h2>Invoices</h2>
                     {this.showContent()}
