@@ -23,28 +23,29 @@ class App extends React.Component {
         })
     };
 
-    parceInvice = (file) =>{
+    parceInvice = (file) => {
         const ips = [];
         const repeatingIps = [];
         const reader = new FileReader();
         reader.readAsArrayBuffer(file);
-        reader.onload = (e) =>{
-            const workbook = xl.read(e.target.result,{type: "buffer"});
+        reader.onload = (e) => {
+            const workbook = xl.read(e.target.result, {type: "buffer"});
             const name = workbook.SheetNames[0];
             const invoiceSheet = workbook.Sheets[name];
             const sheetValues = xl.utils.sheet_to_json(invoiceSheet, {header: 1});
-            for(const key in sheetValues){
+            for (const key in sheetValues) {
                 if (sheetValues[key][4] && sheetValues[key][4].indexOf('(') > -1) {
                     const ip = sheetValues[key][4].split('(')[1].split(')')[0];
                     if (ips.includes(ip)) {
-                        ips.filter(i=> i !== ip);
                         repeatingIps.push(ip)
+                        ips.filter(i => i !== ip);
                     } else {
                         ips.push(ip)
                     }
                 }
             }
             this.setState({invoiceIps: {ips, repeatingIps}})
+
         };
     };
 
@@ -52,32 +53,32 @@ class App extends React.Component {
         const ips = {};
         const reader = new FileReader();
         reader.readAsArrayBuffer(file);
-        reader.onload = async (e) =>{
-            const workbook = await xl.read(e.target.result,{type: "buffer"});
+        reader.onload = (e) => {
+            const workbook = xl.read(e.target.result, {type: "buffer"});
             const names = workbook.SheetNames;
             const sheetsValues = [];
-            for (const name of names){
+            for (const name of names) {
                 sheetsValues.push(workbook.Sheets[name])
             }
             const result = []
             for (const sheet of sheetsValues) {
                 result.push(xl.utils.sheet_to_json(sheet, {header: 1}));
             }
-            for (const key in result){
-                for(const f in result[key]){
+            for (const key in result) {
+                for (const f in result[key]) {
                     ips[result[key][f][2]] = {coast: result[key][f][8], name: result[key][f][0]};
                 }
             }
-            this.setState({sheets: ips})
+            this.setState({sheets: ips, loading: false})
         }
     };
 
+
     handleSubmit = async (event) => {
         event.preventDefault();
-        this.setState({loading : true})
-        const invoiceData = await  this.parceInvice(this.state.invoice);
-        const sheetData = await  this.parceSheet(this.state.sheet);
-        await this.setState({loading : false})
+        this.setState({loading: true});
+        const invoiceData = await this.parceInvice(this.state.invoice);
+        const sheetData = await this.parceSheet(this.state.sheet);
     };
 
     render() {
@@ -105,7 +106,6 @@ class App extends React.Component {
             )
         };
 
-        console.log(this.state)
         return (
             <div className="App">
                 <form className='formLoad'>
@@ -124,7 +124,7 @@ class App extends React.Component {
                 {this.state.loading && <PulseLoader
                     css={{
                         display: 'block',
-                        margin:' 0 auto',
+                        margin: ' 0 auto',
                         borderColor: 'red',
                     }}
                     sizeUnit={"px"}
@@ -133,7 +133,11 @@ class App extends React.Component {
                     loading={this.state.loading}
 
                 />}
-                {this.state.sheets && !this.state.loading && <NewSheet sheet={this.state.sheets} invoice={this.state.invoiceIps}/>   }
+                {
+                    this.state.invoiceIps &&
+                    this.state.sheets &&
+                    !this.state.loading && <NewSheet sheet={this.state.sheets} invoice={this.state.invoiceIps}/>
+                }
             </div>
         );
     }
