@@ -138,6 +138,8 @@
 
 .sort{
   padding: 5px 10px;
+  margin-left: 20px;
+  cursor: pointer;
   border: 1px solid aquamarine;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
