@@ -77,7 +77,7 @@ export default class NewSheet extends React.Component {
     }
 
     showNotFound = () => {
-        return this.state.repeatIp.map(invoice => {
+        return this.state.notFoundIP.map(invoice => {
             return (
                 <div key={invoice} className='sheet-item'>
                     <div className='sheet-server'>
@@ -120,7 +120,7 @@ export default class NewSheet extends React.Component {
 
 
     render() {
-        console.log(this.state);
+        const {notFoundIP, repeatIp, data} = this.state;
         return (
             <div className='container'>
                 <h2 className='container-header'>Real Sheet</h2>
@@ -128,11 +128,11 @@ export default class NewSheet extends React.Component {
                 {<div className='ipsMenu'>
                     <div className='repeting-ips'>
                         <h2 className='show-repeating'>Repeating IP in Invoice</h2>
-                        {this.showRepitedInvoice()}
+                        {repeatIp.length && this.showRepitedInvoice()}
                     </div>
                     <div className='not-found-ips'>
                         <h2 className='show-repeating'>Not Found IP from Invoice</h2>
-                        {this.showNotFound()}
+                        {notFoundIP.length && this.showNotFound()}
                     </div>
                 </div>}
                 <div className='filter-section'>
@@ -148,7 +148,7 @@ export default class NewSheet extends React.Component {
                 </div>
                 <div className='sheet-container'>
                     <h2>Invoices</h2>
-                    {this.showContent()}
+                    {data && this.showContent()}
                 </div>
 
             </div>
