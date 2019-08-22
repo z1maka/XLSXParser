@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/XLSXParser/static/css/main.e52ebf3a.chunk.css",
+    "main.js": "/XLSXParser/static/js/main.76ea788f.chunk.js",
+    "main.js.map": "/XLSXParser/static/js/main.76ea788f.chunk.js.map",
+    "runtime~main.js": "/XLSXParser/static/js/runtime~main.c0c481ec.js",
+    "runtime~main.js.map": "/XLSXParser/static/js/runtime~main.c0c481ec.js.map",
+    "static/js/2.e413bcc8.chunk.js": "/XLSXParser/static/js/2.e413bcc8.chunk.js",
+    "static/js/2.e413bcc8.chunk.js.map": "/XLSXParser/static/js/2.e413bcc8.chunk.js.map",
+    "index.html": "/XLSXParser/index.html",
+    "precache-manifest.af58096f87b03e32e72f8e0d9ae624b0.js": "/XLSXParser/precache-manifest.af58096f87b03e32e72f8e0d9ae624b0.js",
+    "service-worker.js": "/XLSXParser/service-worker.js",
+    "static/css/main.e52ebf3a.chunk.css.map": "/XLSXParser/static/css/main.e52ebf3a.chunk.css.map",
+    "static/media/bounce.png": "/XLSXParser/static/media/bounce.781f2637.png",
+    "static/media/server.png": "/XLSXParser/static/media/server.743fdc7d.png"
+  }
+}
